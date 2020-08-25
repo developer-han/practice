@@ -33,6 +33,8 @@ class App extends Component {
       type: 'All'
     };
     this.submitTodo = this.submitTodo.bind(this);
+    this.toggleComplete = this.toggleComplete.bind(this);
+    this.deleteTodo = this.deleteTodo.bind(this);
   }
 
   inputChange(inputValue) {
@@ -51,10 +53,27 @@ class App extends Component {
     }
 
     todoIndex++;
+
     const todos = [...this.state.todos, todo];
     this.setState({todos, inputValue: ''}, () => {
       console.log('State: ', this.state);
     })
+  }
+
+  deleteTodo(todoIndex) {
+    let {todos} = this.state;
+    todos = todos.filter((todo) => todo.todoIndex !== todoIndex);
+    this.setState({todos});
+  }
+
+  toggleComplete(todoIndex) {
+    let todos = this.state.todos;
+    todos.forEach((todo) => {
+      if (todo.todoIndex === todoIndex) {
+        todo.complate = !todo.complate;
+      }
+    })
+    this.setState({todos})
   }
 
   render() {
@@ -65,7 +84,10 @@ class App extends Component {
         <ScrollView keyboardShouldPersistTaps='always' style={styles.content}>
           <Heading />
           <Input inputValue={inputValue} inputChange={(text) => this.inputChange(text)} />
-          <TodoList todos = {todos} />
+          <TodoList 
+            toggleComplete = {this.toggleComplete}
+            deleteTodo = {this.deleteTodo}
+            todos = {todos} />
           <Button submitTodo = {this.submitTodo} />
         </ScrollView>
       </View>
